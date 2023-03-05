@@ -1,7 +1,11 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 import 'package:simple_audio/simple_audio.dart';
 import 'package:simple_music_player/utils.dart';
+
+const INITIAL_VOLUME = 0.5;
 
 class PlayerController {
   PlayerController({
@@ -18,7 +22,12 @@ class PlayerController {
             debugPrint("Decode Error");
             player.stop();
           },
-        );
+        ) {
+    _player.setVolume(INITIAL_VOLUME);
+    _player.playbackStateStream.listen((event) {
+      playbackState.update((value) => event);
+    });
+  }
 
   final Signal<List<Mp3File>> _files;
 
@@ -28,16 +37,35 @@ class PlayerController {
 
   SimpleAudio get player => _player;
 
-  PlaybackState playbackState = PlaybackState.done;
-  bool get isPlaying => playbackState == PlaybackState.play;
+  Signal<PlaybackState> playbackState = createSignal(PlaybackState.done);
+  bool get isPlaying => playbackState.value == PlaybackState.play;
 
-  bool get isMuted => volume == 0;
-  double trueVolume = 1;
-  double volume = 1;
-  bool normalize = false;
+  Signal<double> volume = createSignal(INITIAL_VOLUME);
+  bool get isMuted => volume.value == 0;
 
-  double position = 0;
-  double duration = 0;
+  Signal<bool> normalize = createSignal(false);
+
+  normalizeVolume(bool value) {
+    _player.normalizeVolume(value);
+    normalize.update((_) => value);
+  }
+
+  void setVolume(double value) {
+    _player.setVolume(value);
+    volume.update((_) => value);
+  }
+
+  Future<void> play(String path) async {
+    await _player.stop();
+    await _player.open(path);
+  }
+
+  Future<void> stop() async {
+    if (playbackState.value != PlaybackState.done) {
+      _player.pause();
+      // await _player.stop(); possible library error
+    }
+  }
 
   String convertSecondsToReadableString(int seconds) {
     int m = seconds ~/ 60;
@@ -57,12 +85,11 @@ class PlayerController {
     );
   }
 
-  void play(String path) async {
-    await player.stop();
-    await player.open(path);
-  }
-
   void dispose() {
+    // _player.stop();
+    playbackState.dispose();
+    volume.dispose();
+    normalize.dispose();
     _files.dispose();
   }
 }

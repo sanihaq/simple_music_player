@@ -25,14 +25,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
-  audiotags:
-    dependency: "direct main"
-    description:
-      name: audiotags
-      sha256: b279f27f20da70a731880814508683facdb13a0c263528641d2d404190ab2cda
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   boolean_selector:
     dependency: transitive
     description:

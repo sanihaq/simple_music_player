@@ -71,6 +71,7 @@ class _FilesListState extends State<FilesList> {
   void initState() {
     super.initState();
     playerController = context.get<PlayerController>();
+    print(playerController.isPlaying);
   }
 
   @override
@@ -91,7 +92,7 @@ class _FilesListState extends State<FilesList> {
           )
         ],
       ),
-      body: files.isEmpty
+      body: files.isEmpty && !playerController.isPlaying
           ? Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -138,53 +139,28 @@ class Player extends StatefulWidget {
   const Player({super.key});
 
   @override
-  _PlayerState createState() => _PlayerState();
+  State<Player> createState() => _PlayerState();
 }
 
 class _PlayerState extends State<Player> {
   bool _expanded = false;
+  double mutedVolume = 0;
+  late final PlayerController playerController;
 
   @override
   void initState() {
     super.initState();
+    playerController = context.get<PlayerController>();
+  }
 
-    // player.playbackStateStream.listen((event) {
-    //   setState(() => playbackState = event);
-
-    //   if (playbackState == PlaybackState.done) {
-    //     player.setMetadata(Metadata(
-    //         title: "Title",
-    //         artist: "Artist",
-    //         album: "Album",
-    //         artUri: "https://picsum.photos/200"));
-    //     player.open(widget.path!);
-    //   }
-    // });
-
-    // player.progressStateStream.listen((event) {
-    //   setState(() {
-    //     position = event.position.toDouble();
-    //     duration = event.duration.toDouble();
-    //   });
-    // });
+  @override
+  void dispose() {
+    playerController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final playlist = ref.watch(playlistProvider);
-    // if (file != null) {
-    //   print(file.path);
-    //   player.setMetadata(
-    //     Metadata(
-    //       title: "Title",
-    //       artist: "Artist",
-    //       album: "Album",
-    //       // artUri: "https://picsum.photos/200",
-    //     ),
-    //   );
-    //   player.stop();
-    //   player.open(file.path);
-    // }
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -212,17 +188,126 @@ class _PlayerState extends State<Player> {
             ),
           ],
         ),
-        child: SizedBox(),
-        // child: playlist.when(
-        //   loading: () => const CircularProgressIndicator(),
-        //   error: (error, stackTrace) => Text(error.toString()),
-        //   data: (files) {
-        //     if (files.item1.isEmpty) return SizedBox();
-        //     // print(files.item1.map((e) => e.path).toList());
-        //     final file = files.item1[files.item2];
-        //     return Text(file.path);
-        //   },
-        // ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CircleButton(
+                    size: 40,
+                    onPressed: () {
+                      if (playerController.isPlaying) {
+                        playerController.player.pause();
+                      } else {
+                        playerController.player.play();
+                      }
+                    },
+                    child: SignalBuilder(
+                        signal: playerController.playbackState,
+                        builder: (context, _, __) {
+                          return Icon(
+                            playerController.isPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            color: Colors.white,
+                          );
+                        }),
+                  ),
+                  const SizedBox(width: 8.0),
+                  CircleButton(
+                    size: 40,
+                    onPressed: playerController.stop,
+                    child: const Icon(Icons.stop, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Volume "),
+                  SignalBuilder(
+                      signal: playerController.volume,
+                      builder: (context, volume, _) {
+                        return Row(
+                          children: [
+                            CircleButton(
+                              size: 25,
+                              onPressed: () {
+                                if (playerController.isMuted) {
+                                  playerController.setVolume(mutedVolume);
+                                } else {
+                                  mutedVolume = volume;
+                                  playerController.setVolume(0);
+                                }
+                              },
+                              child: Icon(
+                                playerController.isMuted
+                                    ? Icons.volume_off
+                                    : Icons.volume_up,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Slider(
+                              value: volume,
+                              max: 1,
+                              onChanged: (value) {
+                                playerController.setVolume(value);
+                              },
+                            ),
+                          ],
+                        );
+                      }),
+                  const Text("Normalize "),
+                  SignalBuilder(
+                    signal: playerController.normalize,
+                    builder: (context, normalize, _) {
+                      return Checkbox(
+                        value: normalize,
+                        onChanged: (value) {
+                          playerController.normalizeVolume(value!);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CircleButton extends StatelessWidget {
+  const CircleButton(
+      {required this.onPressed,
+      required this.child,
+      this.size = 35,
+      this.color = Colors.blue,
+      super.key});
+
+  final void Function()? onPressed;
+  final Widget child;
+  final double size;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: size,
+      width: size,
+      child: ClipOval(
+        child: Material(
+            color: color,
+            child: InkWell(
+                canRequestFocus: false, onTap: onPressed, child: child)),
       ),
     );
   }
