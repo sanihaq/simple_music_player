@@ -1,5 +1,16 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
+import 'package:simple_audio/simple_audio.dart';
+
+class Mp3File {
+  final UniqueKey id;
+  final String path;
+  final Metadata data;
+
+  Mp3File({required this.id, required this.path, required this.data});
+}
+
 Future<List<String>> findMP3Files(Directory dir, [recursive = true]) async {
   List<String> mp3Files = [];
   await Future.forEach(dir.listSync(), (entity) async {

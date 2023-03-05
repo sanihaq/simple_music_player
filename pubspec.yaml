@@ -11,13 +11,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # audiotags:
-  #   git:
-  #     url: https://github.com/erikas-taroza/audiotags.git
 
   cupertino_icons: ^1.0.2
   simple_audio: ^1.4.0
   file_picker: ^5.2.5
+  tuple: ^2.0.1
+  flutter_solidart: ^0.3.0
 
 dev_dependencies:
   flutter_test:

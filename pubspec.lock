@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
+  audiotags:
+    dependency: "direct main"
+    description:
+      name: audiotags
+      sha256: b279f27f20da70a731880814508683facdb13a0c263528641d2d404190ab2cda
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -158,6 +166,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.67.0"
+  flutter_solidart:
+    dependency: "direct main"
+    description:
+      name: flutter_solidart
+      sha256: "505a3c023e7179a33158058038e3c10c25fed0372baf892202a9e8fe6bee8fdb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -389,6 +405,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  solidart:
+    dependency: transitive
+    description:
+      name: solidart
+      sha256: "5f15716c7fe123536c0f66c37f7953133aa9518b33716953020324a0d9cb87f6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   source_span:
     dependency: transitive
     description:
@@ -438,7 +462,7 @@ packages:
     source: hosted
     version: "0.4.16"
   tuple:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: tuple
       sha256: "0ea99cd2f9352b2586583ab2ce6489d1f95a5f6de6fb9492faaf97ae2060f0aa"
