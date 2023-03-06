@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.simple_music_player">
+   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
    <application
         android:label="simple_music_player"
         android:name="${applicationName}"
@@ -30,5 +31,20 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- This is required if you want to be able to see the notification. -->
+        <service
+            android:name="com.erikas.simple_audio.SimpleAudioService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <!-- This is required to interact with the notification buttons. -->
+        <receiver
+            android:name="com.erikas.simple_audio.SimpleAudioReceiver">
+        </receiver>
     </application>
 </manifest>

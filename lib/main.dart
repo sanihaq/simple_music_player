@@ -1,3 +1,4 @@
+import 'package:audiotags/audiotags.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
@@ -71,7 +72,6 @@ class _FilesListState extends State<FilesList> {
   void initState() {
     super.initState();
     playerController = context.get<PlayerController>();
-    print(playerController.isPlaying);
   }
 
   @override
@@ -119,11 +119,23 @@ class _FilesListState extends State<FilesList> {
                   itemBuilder: (ctx, index) => ListTile(
                     title: Text(files[index].split("/").last),
                     onTap: () async {
+                      final path = files[index];
+                      Tag tag = Tag();
+                      try {
+                        tag = await AudioTags.read(path);
+                        // ignore: empty_catches
+                      } catch (e) {}
                       final file = Mp3File(
                         id: UniqueKey(),
-                        path: files[index],
-                        data: Metadata(),
+                        path: path,
+                        data: Metadata(
+                          title: tag.title ?? path.split("/").last,
+                          artist: tag.artist,
+                          album: tag.album,
+                          artBytes: tag.picture,
+                        ),
                       );
+                      print("${file.data.title} + ${file.data.artist}");
                       playerController.addFile(file);
                     },
                   ),
@@ -168,10 +180,10 @@ class _PlayerState extends State<Player> {
         });
       },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 250),
         curve: Curves.fastOutSlowIn,
         width: double.infinity,
-        height: _expanded ? MediaQuery.of(context).size.height : 100.0,
+        height: _expanded ? MediaQuery.of(context).size.height : 120.0,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: _expanded
@@ -182,20 +194,35 @@ class _PlayerState extends State<Player> {
                 ),
           boxShadow: const [
             BoxShadow(
-              color: Colors.grey,
-              blurRadius: 5.0,
-              spreadRadius: 2.0,
+              color: Colors.black26,
+              blurRadius: 10.0,
+              spreadRadius: 1.0,
             ),
           ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            // if (_expanded)
+            //   SignalBuilder(
+            //     signal: playerController.files,
+            //     builder: (context, files, _) {
+            //       return ListView.builder(
+            //         itemCount: files.length,
+            //         itemBuilder: (context, i) {
+            //           return ListTile(
+            //             title: Text(files[i].path),
+            //           );
+            //         },
+            //       );
+            //     },
+            //   ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  Text(""),
                   CircleButton(
                     size: 40,
                     onPressed: () {
@@ -206,15 +233,16 @@ class _PlayerState extends State<Player> {
                       }
                     },
                     child: SignalBuilder(
-                        signal: playerController.playbackState,
-                        builder: (context, _, __) {
-                          return Icon(
-                            playerController.isPlaying
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            color: Colors.white,
-                          );
-                        }),
+                      signal: playerController.playbackState,
+                      builder: (context, _, __) {
+                        return Icon(
+                          playerController.isPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
+                          color: Colors.white,
+                        );
+                      },
+                    ),
                   ),
                   const SizedBox(width: 8.0),
                   CircleButton(
@@ -225,59 +253,60 @@ class _PlayerState extends State<Player> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Volume "),
-                  SignalBuilder(
-                      signal: playerController.volume,
-                      builder: (context, volume, _) {
-                        return Row(
-                          children: [
-                            CircleButton(
-                              size: 25,
-                              onPressed: () {
-                                if (playerController.isMuted) {
-                                  playerController.setVolume(mutedVolume);
-                                } else {
-                                  mutedVolume = volume;
-                                  playerController.setVolume(0);
-                                }
-                              },
-                              child: Icon(
-                                playerController.isMuted
-                                    ? Icons.volume_off
-                                    : Icons.volume_up,
-                                color: Colors.white,
+            if (_expanded)
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Volume "),
+                    SignalBuilder(
+                        signal: playerController.volume,
+                        builder: (context, volume, _) {
+                          return Row(
+                            children: [
+                              CircleButton(
+                                size: 25,
+                                onPressed: () {
+                                  if (playerController.isMuted) {
+                                    playerController.setVolume(mutedVolume);
+                                  } else {
+                                    mutedVolume = volume;
+                                    playerController.setVolume(0);
+                                  }
+                                },
+                                child: Icon(
+                                  playerController.isMuted
+                                      ? Icons.volume_off
+                                      : Icons.volume_up,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                            Slider(
-                              value: volume,
-                              max: 1,
-                              onChanged: (value) {
-                                playerController.setVolume(value);
-                              },
-                            ),
-                          ],
+                              Slider(
+                                value: volume,
+                                max: 1,
+                                onChanged: (value) {
+                                  playerController.setVolume(value);
+                                },
+                              ),
+                            ],
+                          );
+                        }),
+                    const Text("Normalize "),
+                    SignalBuilder(
+                      signal: playerController.normalize,
+                      builder: (context, normalize, _) {
+                        return Checkbox(
+                          value: normalize,
+                          onChanged: (value) {
+                            playerController.normalizeVolume(value!);
+                          },
                         );
-                      }),
-                  const Text("Normalize "),
-                  SignalBuilder(
-                    signal: playerController.normalize,
-                    builder: (context, normalize, _) {
-                      return Checkbox(
-                        value: normalize,
-                        onChanged: (value) {
-                          playerController.normalizeVolume(value!);
-                        },
-                      );
-                    },
-                  ),
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),

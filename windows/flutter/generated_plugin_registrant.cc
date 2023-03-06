@@ -6,9 +6,12 @@
 
 #include "generated_plugin_registrant.h"
 
+#include <audiotags/audiotags_plugin_c_api.h>
 #include <simple_audio/simple_audio_plugin_c_api.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
+  AudiotagsPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("AudiotagsPluginCApi"));
   SimpleAudioPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("SimpleAudioPluginCApi"));
 }
