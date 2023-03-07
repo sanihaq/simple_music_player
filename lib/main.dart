@@ -228,49 +228,109 @@ class _PlayerState extends State<Player> {
               ),
             ],
           ),
-          child: SignalBuilder(
-            signal: playerController.files,
-            builder: (context, files, _) {
-              return ListView.builder(
-                reverse: true,
-                shrinkWrap: true,
-                itemCount: files.length,
-                itemBuilder: (context, i) {
-                  final data = files.reversed.toList()[i].data;
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        if (data.artBytes != null)
-                          SizedBox(
-                            width: 60,
-                            child: Image.memory(data.artBytes!),
-                          )
-                        else
-                          const SizedBox(
-                            width: 60,
-                            height: 60,
-                          ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(data.title ?? "unknown"),
-                              Text(
-                                data.album ?? "unknown",
-                                overflow: TextOverflow.fade,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SignalBuilder(
+                signal: playerController.files,
+                builder: (context, files, _) {
+                  return ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    itemCount: files.length,
+                    itemBuilder: (context, i) {
+                      final data = files.reversed.toList()[i].data;
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            if (data.artBytes != null)
+                              SizedBox(
+                                width: 60,
+                                child: Image.memory(data.artBytes!),
+                              )
+                            else
+                              const SizedBox(
+                                width: 60,
+                                height: 60,
                               ),
-                              Text(data.artist ?? "unknown"),
-                            ],
-                          ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data.title ?? "unknown"),
+                                  Text(
+                                    data.album ?? "unknown",
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                  Text(data.artist ?? "unknown"),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   );
                 },
-              );
-            },
+              ),
+              // if (_expanded)
+              //   Padding(
+              //     padding: const EdgeInsets.only(left: 8.0),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         const Text("Volume "),
+              //         SignalBuilder(
+              //             signal: playerController.volume,
+              //             builder: (context, volume, _) {
+              //               return Row(
+              //                 children: [
+              //                   CircleButton(
+              //                     size: 25,
+              //                     onPressed: () {
+              //                       if (playerController.isMuted) {
+              //                         playerController.setVolume(mutedVolume);
+              //                       } else {
+              //                         mutedVolume = volume;
+              //                         playerController.setVolume(0);
+              //                       }
+              //                     },
+              //                     child: Icon(
+              //                       playerController.isMuted
+              //                           ? Icons.volume_off
+              //                           : Icons.volume_up,
+              //                       color: Colors.white,
+              //                     ),
+              //                   ),
+              //                   Slider(
+              //                     value: volume,
+              //                     max: 1,
+              //                     onChanged: (value) {
+              //                       playerController.setVolume(value);
+              //                     },
+              //                   ),
+              //                 ],
+              //               );
+              //             }),
+              //         const Text("Normalize "),
+              //         SignalBuilder(
+              //           signal: playerController.normalize,
+              //           builder: (context, normalize, _) {
+              //             return Checkbox(
+              //               value: normalize,
+              //               onChanged: (value) {
+              //                 playerController.normalizeVolume(value!);
+              //               },
+              //             );
+              //           },
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+            ],
           )
           // child: Column(
           //   mainAxisAlignment: MainAxisAlignment.end,

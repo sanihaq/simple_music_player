@@ -25,7 +25,7 @@ Future<List<String>> findMP3Files(Directory dir, [recursive = true]) async {
       mp3Files.addAll(subMp3Files);
     }
   });
-  return mp3Files;
+  return mp3Files.reversed.toList();
 }
 
 Future<Mp3File> mp3FileFromPath(String path) async {
