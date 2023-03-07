@@ -29,10 +29,10 @@ packages:
     dependency: "direct main"
     description:
       name: audiotags
-      sha256: "4d046813344a9746a0c4c77a95a0d582345489d71e240da2360c227503bbcdde"
+      sha256: "1d2ab270089dddb21d508356c86d64c158ca51521362cb771da9b731a3b0abd7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -396,10 +396,10 @@ packages:
     dependency: "direct main"
     description:
       name: simple_audio
-      sha256: c585937dee2810b32ca8747b78b6f2de16da333be122ac2751b813dd2ecd4ab4
+      sha256: "65482969ab83c205e10a8648f40a6bd6df2a573124782bfccbec6f847d1d4936"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.0"
+    version: "1.4.2"
   sky_engine:
     dependency: transitive
     description: flutter
