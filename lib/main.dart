@@ -314,16 +314,17 @@ class _PlayerState extends State<Player> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SignalBuilder(
-                          signal: playerController.progress,
-                          builder: (context, value, _) {
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 900),
-                              width: value == 0 || value.isNaN
-                                  ? 0
-                                  : MediaQuery.of(context).size.width * value,
-                              color: Colors.blue,
-                            );
-                          }),
+                        signal: playerController.progress,
+                        builder: (context, value, _) {
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 900),
+                            width: value == 0 || value.isNaN
+                                ? 0
+                                : MediaQuery.of(context).size.width * value,
+                            color: Colors.blue,
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -406,11 +407,17 @@ class _PlayerState extends State<Player> {
                         },
                       ),
                       const SizedBox(width: 8.0),
-                      CircleButton(
-                        size: 40,
-                        onPressed: playerController.next,
-                        child: const Icon(Icons.skip_next, color: Colors.white),
-                      ),
+                      SignalBuilder(
+                          signal: playerController.files,
+                          builder: (context, files, __) {
+                            return CircleButton(
+                              size: 40,
+                              onPressed:
+                                  files.isEmpty ? null : playerController.next,
+                              child: const Icon(Icons.skip_next,
+                                  color: Colors.white),
+                            );
+                          }),
                     ],
                   ),
                 ],
