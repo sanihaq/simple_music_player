@@ -58,7 +58,7 @@ class FilesList extends StatefulWidget {
 
 class _FilesListState extends State<FilesList> {
   late final PlayerController playerController;
-  final List<String> files = [];
+  List<Mp3File> files = [];
 
   Future<void> loadFiles(bool recursive) async {
     files.clear();
@@ -66,7 +66,9 @@ class _FilesListState extends State<FilesList> {
 
     if (selectedDirectory != null) {
       final dir = Directory(selectedDirectory);
-      files.addAll(await findMP3Files(dir, recursive));
+      final paths = await findMP3Files(dir, recursive);
+      files = await Future.wait(
+          paths.map((e) async => await mp3FileFromPath(e)).toList());
       setState(() {});
     }
   }
@@ -117,34 +119,28 @@ class _FilesListState extends State<FilesList> {
           : Stack(
               alignment: AlignmentDirectional.bottomEnd,
               children: [
-                ListView.builder(
-                  itemCount: files.length,
-                  itemBuilder: (ctx, index) => ListTile(
-                    title: Text(files[index].split("/").last),
-                    onTap: () async {
-                      final path = files[index];
-                      final defaultArt = Picture(
-                        pictureType: PictureType.Icon,
-                        mimeType: MimeType.Png,
-                        bytes: base64Decode(mp3FileDefaultArt),
-                      );
-                      Tag tag = Tag(pictures: []);
-                      try {
-                        tag = await AudioTags.read(path) ?? tag;
-                        // ignore: empty_catches
-                      } catch (e) {}
-                      tag.pictures.add(defaultArt);
-                      final file = Mp3File(
-                        id: UniqueKey(),
-                        path: path,
-                        data: Metadata(
-                          title: tag.title ?? path.split("/").last,
-                          artist: tag.artist,
-                          album: tag.album,
-                          artBytes: tag.pictures.first.bytes,
+                Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: kBottomCollapsedSize + 2),
+                  child: ListView.builder(
+                    itemCount: files.length,
+                    itemBuilder: (ctx, index) {
+                      final file = files[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: ListTile(
+                          leading: SizedBox(
+                            width: 60,
+                            child: Image.memory(file.data.artBytes!),
+                          ),
+                          title: Text(
+                              file.data.title ?? file.path.split("/").last),
+                          subtitle: Text(file.data.artist ?? "unknown"),
+                          onTap: () async {
+                            playerController.addFile(file);
+                          },
                         ),
                       );
-                      playerController.addFile(file);
                     },
                   ),
                 ),
@@ -191,7 +187,9 @@ class _PlayerState extends State<Player> {
           duration: const Duration(milliseconds: 250),
           curve: Curves.fastOutSlowIn,
           width: double.infinity,
-          height: _expanded ? MediaQuery.of(context).size.height : 120.0,
+          height: _expanded
+              ? MediaQuery.of(context).size.height
+              : kBottomCollapsedSize,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: _expanded

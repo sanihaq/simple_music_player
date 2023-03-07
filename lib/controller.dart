@@ -3,9 +3,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 import 'package:simple_audio/simple_audio.dart';
+import 'package:simple_music_player/consts.dart';
 import 'package:simple_music_player/utils.dart';
-
-const INITIAL_VOLUME = 0.5;
 
 class PlayerController {
   PlayerController({
@@ -23,7 +22,7 @@ class PlayerController {
             player.stop();
           },
         ) {
-    _player.setVolume(INITIAL_VOLUME);
+    _player.setVolume(kInitialVolume);
     _player.playbackStateStream.listen((event) {
       playbackState.update((value) => event);
     });
@@ -40,7 +39,7 @@ class PlayerController {
   Signal<PlaybackState> playbackState = createSignal(PlaybackState.done);
   bool get isPlaying => playbackState.value == PlaybackState.play;
 
-  Signal<double> volume = createSignal(INITIAL_VOLUME);
+  Signal<double> volume = createSignal(kInitialVolume);
   bool get isMuted => volume.value == 0;
 
   Signal<bool> normalize = createSignal(false);
