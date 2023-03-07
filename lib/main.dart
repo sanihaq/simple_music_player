@@ -62,7 +62,7 @@ class _FilesListState extends State<FilesList> {
   bool isDisabled = false;
   bool isLoading = false;
 
-  Future<void> loadFiles({required bool recursive}) async {
+  Future<int> loadFiles({required bool recursive}) async {
     setState(() {
       isDisabled = true;
     });
@@ -71,19 +71,26 @@ class _FilesListState extends State<FilesList> {
       isLoading = true;
     });
 
+    int newlyAdded = 0;
+
     if (selectedDirectory != null) {
       final dir = Directory(selectedDirectory);
       final paths = await findMP3Files(dir, recursive);
       final newFiles = await Future.wait(
           paths.map((e) async => await mp3FileFromPath(e)).toList());
       for (var e in newFiles) {
-        if (!files.any((el) => el.path == e.path)) files.add(e);
+        if (!files.any((el) => el.path == e.path)) {
+          files.add(e);
+          newlyAdded++;
+        }
       }
     }
     setState(() {
       isDisabled = false;
       isLoading = false;
     });
+
+    return newlyAdded;
   }
 
   @override
@@ -98,6 +105,21 @@ class _FilesListState extends State<FilesList> {
     super.dispose();
   }
 
+  SnackBar showNewlyAddedMsg(int newlyAdded) {
+    return SnackBar(
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.only(bottom: kBottomCollapsedSize),
+      duration: const Duration(seconds: 2),
+      content: Text(newlyAdded == 0
+          ? "No new file found!"
+          : "$newlyAdded new file${newlyAdded > 1 ? "s" : ""} added"),
+      action: SnackBarAction(
+        label: 'Ok',
+        onPressed: () {},
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +129,13 @@ class _FilesListState extends State<FilesList> {
           IconButton(
             onPressed: isDisabled
                 ? null
-                : () async => await loadFiles(recursive: false),
+                : () async {
+                    final newFiles = await loadFiles(recursive: false);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(showNewlyAddedMsg(newFiles));
+                    }
+                  },
             icon: const Icon(Icons.add),
             tooltip: "load files only",
           )
@@ -123,7 +151,14 @@ class _FilesListState extends State<FilesList> {
                         ElevatedButton(
                           onPressed: isDisabled
                               ? null
-                              : () async => await loadFiles(recursive: false),
+                              : () async {
+                                  final newFiles =
+                                      await loadFiles(recursive: false);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        showNewlyAddedMsg(newFiles));
+                                  }
+                                },
                           child: const Text("load only files"),
                         ),
                         const SizedBox(
@@ -132,7 +167,14 @@ class _FilesListState extends State<FilesList> {
                         ElevatedButton(
                           onPressed: isDisabled
                               ? null
-                              : () async => await loadFiles(recursive: true),
+                              : () async {
+                                  final newFiles =
+                                      await loadFiles(recursive: true);
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        showNewlyAddedMsg(newFiles));
+                                  }
+                                },
                           child: const Text("load files and folders"),
                         ),
                       ],
