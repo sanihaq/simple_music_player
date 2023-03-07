@@ -532,7 +532,7 @@ class _PlayerQueueState extends State<PlayerQueue> {
                               shrinkWrap: true,
                               itemCount: files.length,
                               itemBuilder: (context, i) {
-                                final file = files.reversed.toList()[i];
+                                final file = files.toList()[i];
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: getQueueItem(file),
