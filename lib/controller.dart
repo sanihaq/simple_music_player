@@ -27,6 +27,7 @@ class PlayerController {
     _player.setVolume(kInitialVolume);
     _player.playbackStateStream.listen((event) {
       playbackState.update((value) => event);
+      if (event == PlaybackState.done && files.value.isNotEmpty) next();
     });
   }
 
@@ -64,6 +65,12 @@ class PlayerController {
     await _player.stop();
     await _player.open(file.path);
     _currentFile.update((_) => file);
+  }
+
+  Future<void> next() async {
+    final file = files.value.first;
+    await play(file);
+    remove(file.id);
   }
 
   Future<void> stop() async {

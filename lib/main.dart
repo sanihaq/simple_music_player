@@ -509,12 +509,15 @@ class _PlayerQueueState extends State<PlayerQueue> {
                               itemCount: files.length,
                               itemBuilder: (context, i) {
                                 final file = files.reversed.toList()[i];
-                                return getQueueItem(file);
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: getQueueItem(file),
+                                );
                               },
                             ),
                           ],
                         )
-                      : getQueueItem(files.reversed.first);
+                      : getQueueItem(files.first);
             },
           ),
         ),
