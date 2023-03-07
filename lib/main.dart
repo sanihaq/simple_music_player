@@ -58,19 +58,32 @@ class FilesList extends StatefulWidget {
 
 class _FilesListState extends State<FilesList> {
   late final PlayerController playerController;
-  List<Mp3File> files = [];
+  final List<Mp3File> files = [];
+  bool isDisabled = false;
+  bool isLoading = false;
 
-  Future<void> loadFiles(bool recursive) async {
-    files.clear();
+  Future<void> loadFiles({required bool recursive}) async {
+    setState(() {
+      isDisabled = true;
+    });
     String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    setState(() {
+      isLoading = true;
+    });
 
     if (selectedDirectory != null) {
       final dir = Directory(selectedDirectory);
       final paths = await findMP3Files(dir, recursive);
-      files = await Future.wait(
+      final newFiles = await Future.wait(
           paths.map((e) async => await mp3FileFromPath(e)).toList());
-      setState(() {});
+      for (var e in newFiles) {
+        if (!files.any((el) => el.path == e.path)) files.add(e);
+      }
     }
+    setState(() {
+      isDisabled = false;
+      isLoading = false;
+    });
   }
 
   @override
@@ -92,29 +105,38 @@ class _FilesListState extends State<FilesList> {
         title: const Text("Simple Player"),
         actions: [
           IconButton(
-            onPressed: () async => await loadFiles(true),
+            onPressed: isDisabled
+                ? null
+                : () async => await loadFiles(recursive: false),
             icon: const Icon(Icons.add),
+            tooltip: "load files only",
           )
         ],
       ),
       body: files.isEmpty && !playerController.isPlaying
           ? Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async => await loadFiles(true),
-                    child: const Text("load files.."),
-                  ),
-                  const SizedBox(
-                    width: 16.0,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async => await loadFiles(false),
-                    child: const Text("load files only"),
-                  ),
-                ],
-              ),
+              child: isLoading
+                  ? const CircularProgressIndicator()
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: isDisabled
+                              ? null
+                              : () async => await loadFiles(recursive: false),
+                          child: const Text("load only files"),
+                        ),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        ElevatedButton(
+                          onPressed: isDisabled
+                              ? null
+                              : () async => await loadFiles(recursive: true),
+                          child: const Text("load files and folders"),
+                        ),
+                      ],
+                    ),
             )
           : Stack(
               alignment: AlignmentDirectional.bottomEnd,
