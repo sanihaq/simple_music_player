@@ -8,8 +8,10 @@ import 'package:simple_music_player/utils.dart';
 
 class PlayerController {
   PlayerController({
+    Mp3File? currentFile,
     List<Mp3File> initialFiles = const [],
   })  : _files = createSignal(initialFiles),
+        _currentFile = createSignal(currentFile),
         _player = SimpleAudio(
           onSkipNext: (_) => debugPrint("Next"),
           onSkipPrevious: (_) => debugPrint("Prev"),
@@ -30,7 +32,11 @@ class PlayerController {
 
   final Signal<List<Mp3File>> _files;
 
+  final Signal<Mp3File?> _currentFile;
+
   ReadableSignal<List<Mp3File>> get files => _files.readable;
+
+  ReadableSignal<Mp3File?> get currentFile => _currentFile.readable;
 
   final SimpleAudio _player;
 
@@ -54,15 +60,16 @@ class PlayerController {
     volume.update((_) => value);
   }
 
-  Future<void> play(String path) async {
+  Future<void> play(Mp3File file) async {
     await _player.stop();
-    await _player.open(path);
+    await _player.open(file.path);
+    _currentFile.update((_) => file);
   }
 
   Future<void> stop() async {
     if (playbackState.value != PlaybackState.done) {
       _player.pause();
-      // await _player.stop(); possible library error
+      // await _player.stop(); // possible library error
     }
   }
 
@@ -74,8 +81,11 @@ class PlayerController {
   }
 
   void addFile(Mp3File file) {
-    _files.update((value) => [...value, file]);
-    play(file.path);
+    if (_currentFile.value == null) {
+      play(file);
+    } else {
+      _files.update((value) => [...value, file.copyWith(id: UniqueKey())]);
+    }
   }
 
   void remove(UniqueKey id) {
@@ -85,7 +95,6 @@ class PlayerController {
   }
 
   void dispose() {
-    // _player.stop();
     playbackState.dispose();
     volume.dispose();
     normalize.dispose();

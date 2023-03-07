@@ -241,249 +241,284 @@ class _PlayerState extends State<Player> {
 
   @override
   Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: PlayerQueue(
+            setExpanded: (v) => setState(() => _expanded = v),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            height: 60,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Volume "),
+                    SignalBuilder(
+                      signal: playerController.volume,
+                      builder: (context, volume, _) {
+                        return Row(
+                          children: [
+                            CircleButton(
+                              size: 25,
+                              onPressed: () {
+                                if (playerController.isMuted) {
+                                  playerController.setVolume(mutedVolume);
+                                } else {
+                                  mutedVolume = volume;
+                                  playerController.setVolume(0);
+                                }
+                              },
+                              child: Icon(
+                                playerController.isMuted
+                                    ? Icons.volume_off
+                                    : Icons.volume_up,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Slider(
+                              value: volume,
+                              max: 1,
+                              onChanged: (value) {
+                                playerController.setVolume(value);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const Text("Normalize "),
+                    SignalBuilder(
+                      signal: playerController.normalize,
+                      builder: (context, normalize, _) {
+                        return Checkbox(
+                          value: normalize,
+                          onChanged: (value) {
+                            playerController.normalizeVolume(value!);
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 5.0,
+                  color: Colors.blue,
+                ),
+              ],
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: AnimatedPadding(
+            duration: const Duration(milliseconds: 50),
+            padding: EdgeInsets.only(bottom: _expanded ? 50.0 : 6.0),
+            child: Container(
+              height: 60,
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Stack(
+                alignment: AlignmentDirectional.centerEnd,
+                children: [
+                  SignalBuilder(
+                    signal: playerController.currentFile,
+                    builder: (context, file, __) {
+                      if (file == null) return const SizedBox();
+                      const imageSize = 55.0;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (file.data.artBytes != null)
+                            SizedBox(
+                              width: imageSize,
+                              child: Image.memory(file.data.artBytes!),
+                            )
+                          else
+                            const SizedBox(
+                              width: imageSize,
+                              height: imageSize,
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 2.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(file.data.title ?? "unknown"),
+                                const SizedBox(height: 2.0),
+                                Text(file.data.artist ?? "unknown"),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CircleButton(
+                        size: 40,
+                        onPressed: () {
+                          if (playerController.isPlaying) {
+                            playerController.player.pause();
+                          } else {
+                            playerController.player.play();
+                          }
+                        },
+                        child: SignalBuilder(
+                          signal: playerController.playbackState,
+                          builder: (context, _, __) {
+                            return Icon(
+                              playerController.isPlaying
+                                  ? Icons.pause_rounded
+                                  : Icons.play_arrow_rounded,
+                              color: Colors.white,
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 8.0),
+                      CircleButton(
+                        size: 40,
+                        onPressed: playerController.stop,
+                        child: const Icon(Icons.stop, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class PlayerQueue extends StatefulWidget {
+  const PlayerQueue({super.key, required this.setExpanded});
+  final void Function(bool) setExpanded;
+
+  @override
+  State<PlayerQueue> createState() => _PlayerQueueState();
+}
+
+class _PlayerQueueState extends State<PlayerQueue> {
+  bool _expanded = false;
+  late final PlayerController playerController;
+
+  @override
+  void initState() {
+    super.initState();
+    playerController = context.get<PlayerController>();
+  }
+
+  @override
+  void dispose() {
+    playerController.dispose();
+    super.dispose();
+  }
+
+  Widget getQueueItem(Mp3File file) {
+    const imageSize = 46.0;
+    final data = file.data;
+    return Row(
+      children: [
+        if (data.artBytes != null)
+          SizedBox(
+            width: imageSize,
+            child: Image.memory(data.artBytes!),
+          )
+        else
+          const SizedBox(
+            width: imageSize,
+            height: imageSize,
+          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(data.title ?? "unknown"),
+              Text(data.artist ?? "unknown"),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         setState(() {
           _expanded = !_expanded;
         });
+        widget.setExpanded(_expanded);
       },
       child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.fastOutSlowIn,
-          width: double.infinity,
-          height: _expanded
-              ? MediaQuery.of(context).size.height
-              : kBottomCollapsedSize,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: _expanded
-                ? null
-                : const BorderRadius.only(
-                    topLeft: Radius.circular(16.0),
-                    topRight: Radius.circular(16.0),
-                  ),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 10.0,
-                spreadRadius: 1.0,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              SignalBuilder(
-                signal: playerController.files,
-                builder: (context, files, _) {
-                  return ListView.builder(
-                    reverse: true,
-                    shrinkWrap: true,
-                    itemCount: files.length,
-                    itemBuilder: (context, i) {
-                      final data = files.reversed.toList()[i].data;
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.fastOutSlowIn,
+        width: double.infinity,
+        height: _expanded
+            ? MediaQuery.of(context).size.height
+            : kBottomCollapsedSize,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: _expanded
+              ? null
+              : const BorderRadius.only(
+                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16.0),
+                ),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              spreadRadius: 1.0,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: 16.0, bottom: _expanded ? 110 : 78.0, top: 8.0),
+          child: SignalBuilder(
+            signal: playerController.files,
+            builder: (context, files, _) {
+              return files.isEmpty
+                  ? const SizedBox()
+                  : _expanded
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            if (data.artBytes != null)
-                              SizedBox(
-                                width: 60,
-                                child: Image.memory(data.artBytes!),
-                              )
-                            else
-                              const SizedBox(
-                                width: 60,
-                                height: 60,
-                              ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(data.title ?? "unknown"),
-                                  Text(
-                                    data.album ?? "unknown",
-                                    overflow: TextOverflow.fade,
-                                  ),
-                                  Text(data.artist ?? "unknown"),
-                                ],
-                              ),
+                            ListView.builder(
+                              reverse: true,
+                              shrinkWrap: true,
+                              itemCount: files.length,
+                              itemBuilder: (context, i) {
+                                final file = files.reversed.toList()[i];
+                                return getQueueItem(file);
+                              },
                             ),
                           ],
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-              // if (_expanded)
-              //   Padding(
-              //     padding: const EdgeInsets.only(left: 8.0),
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: [
-              //         const Text("Volume "),
-              //         SignalBuilder(
-              //             signal: playerController.volume,
-              //             builder: (context, volume, _) {
-              //               return Row(
-              //                 children: [
-              //                   CircleButton(
-              //                     size: 25,
-              //                     onPressed: () {
-              //                       if (playerController.isMuted) {
-              //                         playerController.setVolume(mutedVolume);
-              //                       } else {
-              //                         mutedVolume = volume;
-              //                         playerController.setVolume(0);
-              //                       }
-              //                     },
-              //                     child: Icon(
-              //                       playerController.isMuted
-              //                           ? Icons.volume_off
-              //                           : Icons.volume_up,
-              //                       color: Colors.white,
-              //                     ),
-              //                   ),
-              //                   Slider(
-              //                     value: volume,
-              //                     max: 1,
-              //                     onChanged: (value) {
-              //                       playerController.setVolume(value);
-              //                     },
-              //                   ),
-              //                 ],
-              //               );
-              //             }),
-              //         const Text("Normalize "),
-              //         SignalBuilder(
-              //           signal: playerController.normalize,
-              //           builder: (context, normalize, _) {
-              //             return Checkbox(
-              //               value: normalize,
-              //               onChanged: (value) {
-              //                 playerController.normalizeVolume(value!);
-              //               },
-              //             );
-              //           },
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-            ],
-          )
-          // child: Column(
-          //   mainAxisAlignment: MainAxisAlignment.end,
-          //   children: [
-          //     // if (_expanded)
-          //     //   SignalBuilder(
-          //     //     signal: playerController.files,
-          //     //     builder: (context, files, _) {
-          //     //       return ListView.builder(
-          //     //         itemCount: files.length,
-          //     //         itemBuilder: (context, i) {
-          //     //           return ListTile(
-          //     //             title: Text(files[i].path),
-          //     //           );
-          //     //         },
-          //     //       );
-          //     //     },
-          //     //   ),
-          //     Padding(
-          //       padding: const EdgeInsets.all(8.0),
-          //       child: Row(
-          //         mainAxisAlignment: MainAxisAlignment.end,
-          //         children: [
-          //           Text(""),
-          //           CircleButton(
-          //             size: 40,
-          //             onPressed: () {
-          //               if (playerController.isPlaying) {
-          //                 playerController.player.pause();
-          //               } else {
-          //                 playerController.player.play();
-          //               }
-          //             },
-          //             child: SignalBuilder(
-          //               signal: playerController.playbackState,
-          //               builder: (context, _, __) {
-          //                 return Icon(
-          //                   playerController.isPlaying
-          //                       ? Icons.pause_rounded
-          //                       : Icons.play_arrow_rounded,
-          //                   color: Colors.white,
-          //                 );
-          //               },
-          //             ),
-          //           ),
-          //           const SizedBox(width: 8.0),
-          //           CircleButton(
-          //             size: 40,
-          //             onPressed: playerController.stop,
-          //             child: const Icon(Icons.stop, color: Colors.white),
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //     if (_expanded)
-          //       Padding(
-          //         padding: const EdgeInsets.only(left: 8.0),
-          //         child: Row(
-          //           mainAxisAlignment: MainAxisAlignment.center,
-          //           children: [
-          //             const Text("Volume "),
-          //             SignalBuilder(
-          //                 signal: playerController.volume,
-          //                 builder: (context, volume, _) {
-          //                   return Row(
-          //                     children: [
-          //                       CircleButton(
-          //                         size: 25,
-          //                         onPressed: () {
-          //                           if (playerController.isMuted) {
-          //                             playerController.setVolume(mutedVolume);
-          //                           } else {
-          //                             mutedVolume = volume;
-          //                             playerController.setVolume(0);
-          //                           }
-          //                         },
-          //                         child: Icon(
-          //                           playerController.isMuted
-          //                               ? Icons.volume_off
-          //                               : Icons.volume_up,
-          //                           color: Colors.white,
-          //                         ),
-          //                       ),
-          //                       Slider(
-          //                         value: volume,
-          //                         max: 1,
-          //                         onChanged: (value) {
-          //                           playerController.setVolume(value);
-          //                         },
-          //                       ),
-          //                     ],
-          //                   );
-          //                 }),
-          //             const Text("Normalize "),
-          //             SignalBuilder(
-          //               signal: playerController.normalize,
-          //               builder: (context, normalize, _) {
-          //                 return Checkbox(
-          //                   value: normalize,
-          //                   onChanged: (value) {
-          //                     playerController.normalizeVolume(value!);
-          //                   },
-          //                 );
-          //               },
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //   ],
-          // ),
+                        )
+                      : getQueueItem(files.reversed.first);
+            },
           ),
+        ),
+      ),
     );
   }
 }

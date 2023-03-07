@@ -1,6 +1,6 @@
 import 'package:simple_music_player/utils.dart';
 
-const kBottomCollapsedSize = 100.0;
+const kBottomCollapsedSize = 126.0;
 
 const kInitialVolume = 0.5;
 

@@ -13,6 +13,18 @@ class Mp3File {
   final Metadata data;
 
   Mp3File({required this.id, required this.path, required this.data});
+
+  Mp3File copyWith({
+    UniqueKey? id,
+    String? path,
+    Metadata? data,
+  }) {
+    return Mp3File(
+      id: id ?? this.id,
+      path: path ?? this.path,
+      data: data ?? this.data,
+    );
+  }
 }
 
 Future<List<String>> findMP3Files(Directory dir, [recursive = true]) async {
