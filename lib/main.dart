@@ -308,9 +308,24 @@ class _PlayerState extends State<Player> {
                     ),
                   ],
                 ),
-                Container(
+                SizedBox(
                   height: 5.0,
-                  color: Colors.blue,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SignalBuilder(
+                          signal: playerController.progress,
+                          builder: (context, value, _) {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 900),
+                              width: value == 0 || value.isNaN
+                                  ? 0
+                                  : MediaQuery.of(context).size.width * value,
+                              color: Colors.blue,
+                            );
+                          }),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -367,32 +382,34 @@ class _PlayerState extends State<Player> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CircleButton(
-                        size: 40,
-                        onPressed: () {
-                          if (playerController.isPlaying) {
-                            playerController.player.pause();
-                          } else {
-                            playerController.player.play();
-                          }
-                        },
-                        child: SignalBuilder(
-                          signal: playerController.playbackState,
-                          builder: (context, _, __) {
-                            return Icon(
+                      SignalBuilder(
+                        signal: playerController.playbackState,
+                        builder: (context, state, __) {
+                          return CircleButton(
+                            size: 40,
+                            onPressed: state == PlaybackState.done
+                                ? null
+                                : () {
+                                    if (playerController.isPlaying) {
+                                      playerController.player.pause();
+                                    } else {
+                                      playerController.player.play();
+                                    }
+                                  },
+                            child: Icon(
                               playerController.isPlaying
                                   ? Icons.pause_rounded
                                   : Icons.play_arrow_rounded,
                               color: Colors.white,
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(width: 8.0),
                       CircleButton(
                         size: 40,
-                        onPressed: playerController.stop,
-                        child: const Icon(Icons.stop, color: Colors.white),
+                        onPressed: playerController.next,
+                        child: const Icon(Icons.skip_next, color: Colors.white),
                       ),
                     ],
                   ),

@@ -27,7 +27,11 @@ class PlayerController {
     _player.setVolume(kInitialVolume);
     _player.playbackStateStream.listen((event) {
       playbackState.update((value) => event);
-      if (event == PlaybackState.done && files.value.isNotEmpty) next();
+      if (event == PlaybackState.done) next();
+    });
+    player.progressStateStream.listen((event) {
+      final value = event.position.toDouble() / event.duration.toDouble();
+      if (progress.value != value) progress.update((_) => value);
     });
   }
 
@@ -51,6 +55,8 @@ class PlayerController {
 
   Signal<bool> normalize = createSignal(false);
 
+  Signal<double> progress = createSignal(0);
+
   normalizeVolume(bool value) {
     _player.normalizeVolume(value);
     normalize.update((_) => value);
@@ -68,6 +74,10 @@ class PlayerController {
   }
 
   Future<void> next() async {
+    if (files.value.isEmpty) {
+      _currentFile.update((_) => null);
+      return;
+    }
     final file = files.value.first;
     await play(file);
     remove(file.id);
