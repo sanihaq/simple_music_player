@@ -13,9 +13,9 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  simple_audio: ^1.4.2
+  simple_audio: ^1.4.3
   audiotags: ^1.1.0
-  flutter_solidart: ^0.3.0
+  flutter_solidart: ^0.3.1
   file_picker: ^5.2.5
   tuple: ^2.0.1
 

@@ -170,10 +170,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_solidart
-      sha256: "505a3c023e7179a33158058038e3c10c25fed0372baf892202a9e8fe6bee8fdb"
+      sha256: "84860a28c058d310d9be92b97ed2b290440d2d570f2e0bbdce86c44f098d00be"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -396,10 +396,10 @@ packages:
     dependency: "direct main"
     description:
       name: simple_audio
-      sha256: "65482969ab83c205e10a8648f40a6bd6df2a573124782bfccbec6f847d1d4936"
+      sha256: "787b70fdd03789948c672c2dd6212c85b8799b8451b3d5c15f399401f814bde1"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.2"
+    version: "1.4.3"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -409,10 +409,10 @@ packages:
     dependency: transitive
     description:
       name: solidart
-      sha256: "5f15716c7fe123536c0f66c37f7953133aa9518b33716953020324a0d9cb87f6"
+      sha256: e110e2141a6437c0d1fdd2d69f5cb28e9f2b92ebe43bb0c88f7d9a399b916925
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.2"
+    version: "0.2.3"
   source_span:
     dependency: transitive
     description:
