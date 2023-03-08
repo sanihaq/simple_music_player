@@ -23,7 +23,6 @@ class _VolumeControlState extends State<VolumeControl> {
 
   @override
   void dispose() {
-    playerController.dispose();
     super.dispose();
   }
 

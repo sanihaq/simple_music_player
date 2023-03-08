@@ -22,7 +22,6 @@ class _FilesLoaderState extends State<FilesLoader> {
 
   @override
   void dispose() {
-    filesController.dispose();
     super.dispose();
   }
 

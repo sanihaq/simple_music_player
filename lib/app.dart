@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
+import 'package:simple_music_player/components/player_queue.dart';
+import 'package:simple_music_player/states/others.dart';
 
 import '/components/files_loader.dart';
 import '/components/playback_control.dart';
@@ -18,6 +20,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final FilesController filesController;
+
   @override
   void initState() {
     super.initState();
@@ -26,7 +29,7 @@ class _AppState extends State<App> {
 
   @override
   void dispose() {
-    filesController.dispose();
+    expandQueue.dispose();
     super.dispose();
   }
 
@@ -70,16 +73,15 @@ class _AppState extends State<App> {
               ),
             ],
           ),
-          body: files.isEmpty
-              ? const FilesLoader()
-              : Stack(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  children: const [
-                    FilesList(),
-                    VolumeControl(),
-                    PlaybackControl(),
-                  ],
-                ),
+          body: Stack(
+            alignment: AlignmentDirectional.bottomEnd,
+            children: [
+              if (files.isEmpty) const FilesLoader() else const FilesList(),
+              const PlayerQueue(),
+              const VolumeControl(),
+              const PlaybackControl(),
+            ],
+          ),
         );
       },
     );

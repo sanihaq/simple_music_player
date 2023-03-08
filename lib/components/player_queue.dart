@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 
+import '../states/others.dart';
 import '../utils/consts.dart';
 import '../states/player_controller.dart';
 import '../utils/utils.dart';
 
 class PlayerQueue extends StatefulWidget {
-  const PlayerQueue({super.key, required this.setExpanded});
-  final void Function(bool) setExpanded;
+  const PlayerQueue({super.key});
 
   @override
   State<PlayerQueue> createState() => _PlayerQueueState();
 }
 
 class _PlayerQueueState extends State<PlayerQueue> {
-  bool _expanded = false;
   late final PlaybackController playerController;
 
   @override
@@ -25,7 +24,6 @@ class _PlayerQueueState extends State<PlayerQueue> {
 
   @override
   void dispose() {
-    playerController.dispose();
     super.dispose();
   }
 
@@ -60,23 +58,19 @@ class _PlayerQueueState extends State<PlayerQueue> {
 
   @override
   Widget build(BuildContext context) {
+    final expanded = context.observe<bool>(OtherSignals.expandQueue);
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _expanded = !_expanded;
-        });
-        widget.setExpanded(_expanded);
-      },
+      onTap: () => expandQueue.update((value) => !value),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.fastOutSlowIn,
         width: double.infinity,
-        height: _expanded
+        height: expanded
             ? MediaQuery.of(context).size.height
             : kBottomCollapsedSize,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: _expanded
+          borderRadius: expanded
               ? null
               : const BorderRadius.only(
                   topLeft: Radius.circular(16.0),
@@ -92,13 +86,13 @@ class _PlayerQueueState extends State<PlayerQueue> {
         ),
         child: Padding(
           padding: EdgeInsets.only(
-              left: 16.0, bottom: _expanded ? 110 : 78.0, top: 8.0),
+              left: 16.0, bottom: expanded ? 110 : 78.0, top: 8.0),
           child: SignalBuilder(
             signal: playerController.queueList,
             builder: (context, files, _) {
               return files.isEmpty
                   ? const SizedBox()
-                  : _expanded
+                  : expanded
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [

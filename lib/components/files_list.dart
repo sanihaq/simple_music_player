@@ -25,8 +25,6 @@ class _FilesListState extends State<FilesList> {
 
   @override
   void dispose() {
-    filesController.dispose();
-    playerController.dispose();
     super.dispose();
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 import 'package:simple_audio/simple_audio.dart';
 
+import '../states/others.dart';
 import '../states/player_controller.dart';
 import 'elements.dart';
 
@@ -24,19 +25,17 @@ class _PlaybackControlState extends State<PlaybackControl> {
 
   @override
   void dispose() {
-    playerController.dispose();
     super.dispose();
   }
 
-  bool _expanded = false;
-
   @override
   Widget build(BuildContext context) {
+    final expanded = context.observe<bool>(OtherSignals.expandQueue);
     return Align(
       alignment: Alignment.bottomCenter,
       child: AnimatedPadding(
         duration: const Duration(milliseconds: 50),
-        padding: EdgeInsets.only(bottom: _expanded ? 50.0 : 6.0),
+        padding: EdgeInsets.only(bottom: expanded ? 50.0 : 6.0),
         child: Container(
           height: 60,
           color: Colors.white,
@@ -44,41 +43,44 @@ class _PlaybackControlState extends State<PlaybackControl> {
           child: Stack(
             alignment: AlignmentDirectional.centerEnd,
             children: [
-              SignalBuilder(
-                signal: playerController.currentFile,
-                builder: (context, file, __) {
-                  if (file == null) return const SizedBox();
-                  const imageSize = 55.0;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (file.data.artBytes != null)
-                        SizedBox(
-                          width: imageSize,
-                          child: Image.memory(file.data.artBytes!),
-                        )
-                      else
-                        const SizedBox(
-                          width: imageSize,
-                          height: imageSize,
+              GestureDetector(
+                onTap: () => expandQueue.update((value) => !value),
+                child: SignalBuilder(
+                  signal: playerController.currentFile,
+                  builder: (context, file, __) {
+                    if (file == null) return const SizedBox();
+                    const imageSize = 55.0;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (file.data.artBytes != null)
+                          SizedBox(
+                            width: imageSize,
+                            child: Image.memory(file.data.artBytes!),
+                          )
+                        else
+                          const SizedBox(
+                            width: imageSize,
+                            height: imageSize,
+                          ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 2.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(file.data.title ?? "unknown"),
+                              const SizedBox(height: 2.0),
+                              Text(file.data.artist ?? "unknown"),
+                            ],
+                          ),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 2.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(file.data.title ?? "unknown"),
-                            const SizedBox(height: 2.0),
-                            Text(file.data.artist ?? "unknown"),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                      ],
+                    );
+                  },
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
