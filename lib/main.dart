@@ -106,13 +106,17 @@ class _FilesListState extends State<FilesList> {
   }
 
   SnackBar showNewlyAddedMsg(int newlyAdded) {
+    return showMsg(newlyAdded == 0
+        ? "No new file found!"
+        : "$newlyAdded new file${newlyAdded > 1 ? "s" : ""} added");
+  }
+
+  SnackBar showMsg(String msg) {
     return SnackBar(
       behavior: SnackBarBehavior.floating,
       margin: const EdgeInsets.only(bottom: kBottomCollapsedSize),
       duration: const Duration(seconds: 2),
-      content: Text(newlyAdded == 0
-          ? "No new file found!"
-          : "$newlyAdded new file${newlyAdded > 1 ? "s" : ""} added"),
+      content: Text(msg),
       action: SnackBarAction(
         label: 'Ok',
         onPressed: () {},
@@ -137,8 +141,24 @@ class _FilesListState extends State<FilesList> {
                     }
                   },
             icon: const Icon(Icons.add),
-            tooltip: "load files only",
-          )
+            tooltip: "load files",
+          ),
+          const SizedBox(width: 4.0),
+          IconButton(
+            onPressed: files.isEmpty
+                ? null
+                : () async {
+                    setState(() {
+                      files.clear();
+                    });
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(showMsg("files cleared"));
+                    }
+                  },
+            icon: const Icon(Icons.close),
+            tooltip: "clear files",
+          ),
         ],
       ),
       body: files.isEmpty && !playerController.isPlaying
