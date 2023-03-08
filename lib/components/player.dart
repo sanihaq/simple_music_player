@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 import 'package:simple_music_player/components/queue_llst.dart';
 
-import '../controller.dart';
+import '../states/player_controller.dart';
 
 class Player extends StatefulWidget {
   const Player({super.key});
@@ -14,12 +14,12 @@ class Player extends StatefulWidget {
 class _PlayerState extends State<Player> {
   bool _expanded = false;
   double mutedVolume = 0;
-  late final PlayerController playerController;
+  late final PlaybackController playerController;
 
   @override
   void initState() {
     super.initState();
-    playerController = context.get<PlayerController>();
+    playerController = context.get<PlaybackController>();
   }
 
   @override

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 
-import '../controller.dart';
+import '../states/player_controller.dart';
 import 'elements.dart';
 
 class VolumeControl extends StatefulWidget {
@@ -15,12 +13,12 @@ class VolumeControl extends StatefulWidget {
 
 class _VolumeControlState extends State<VolumeControl> {
   double mutedVolume = 0;
-  late final PlayerController playerController;
+  late final PlaybackController playerController;
 
   @override
   void initState() {
     super.initState();
-    playerController = context.get<PlayerController>();
+    playerController = context.get<PlaybackController>();
   }
 
   @override

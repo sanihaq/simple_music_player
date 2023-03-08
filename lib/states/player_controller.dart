@@ -3,14 +3,14 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 import 'package:simple_audio/simple_audio.dart';
-import 'package:simple_music_player/consts.dart';
-import 'package:simple_music_player/utils.dart';
+import 'package:simple_music_player/utils/consts.dart';
+import 'package:simple_music_player/utils/utils.dart';
 
-class PlayerController {
-  PlayerController({
+class PlaybackController {
+  PlaybackController({
     Mp3File? currentFile,
-    List<Mp3File> initialFiles = const [],
-  })  : _files = createSignal(initialFiles),
+    List<Mp3File> initialQueue = const [],
+  })  : _queueList = createSignal(initialQueue),
         _currentFile = createSignal(currentFile),
         _player = SimpleAudio(
           onSkipNext: (_) => debugPrint("Next"),
@@ -35,30 +35,22 @@ class PlayerController {
     });
   }
 
-  final Signal<List<Mp3File>> _files;
-
-  final Signal<Mp3File?> _currentFile;
-
-  ReadableSignal<List<Mp3File>> get files => _files.readable;
-
-  ReadableSignal<Mp3File?> get currentFile => _currentFile.readable;
-
   final SimpleAudio _player;
 
-  SimpleAudio get player => _player;
-
-  Signal<PlaybackState> playbackState = createSignal(PlaybackState.done);
-  bool get isPlaying => playbackState.value == PlaybackState.play;
-
+  final Signal<List<Mp3File>> _queueList;
+  final Signal<Mp3File?> _currentFile;
   final Signal<bool> _isLoop = createSignal(false);
+  final Signal<double> volume = createSignal(kInitialVolume);
+  final Signal<bool> normalize = createSignal(false);
+  final Signal<double> progress = createSignal(0);
+  final Signal<PlaybackState> playbackState = createSignal(PlaybackState.done);
+
+  SimpleAudio get player => _player;
+  ReadableSignal<List<Mp3File>> get queueList => _queueList.readable;
+  ReadableSignal<Mp3File?> get currentFile => _currentFile.readable;
   ReadableSignal<bool> get isLoop => _isLoop.readable;
-
-  Signal<double> volume = createSignal(kInitialVolume);
   bool get isMuted => volume.value == 0;
-
-  Signal<bool> normalize = createSignal(false);
-
-  Signal<double> progress = createSignal(0);
+  bool get isPlaying => playbackState.value == PlaybackState.play;
 
   normalizeVolume(bool value) {
     _player.normalizeVolume(value);
@@ -82,11 +74,11 @@ class PlayerController {
   }
 
   Future<void> next() async {
-    if (files.value.isEmpty) {
+    if (queueList.value.isEmpty) {
       _currentFile.update((_) => null);
       return;
     }
-    final file = files.value.first;
+    final file = queueList.value.first;
     await play(file);
     remove(file.id);
   }
@@ -105,24 +97,27 @@ class PlayerController {
     return "$m:${s > 9 ? s : "0$s"}";
   }
 
-  void addFile(Mp3File file) {
+  void addToQueue(Mp3File file) {
     if (_currentFile.value == null) {
       play(file);
     } else {
-      _files.update((value) => [...value, file.copyWith(id: UniqueKey())]);
+      _queueList.update((value) => [...value, file.copyWith(id: UniqueKey())]);
     }
   }
 
   void remove(UniqueKey id) {
-    _files.update(
+    _queueList.update(
       (value) => value.where((file) => file.id != id).toList(),
     );
   }
 
   void dispose() {
-    playbackState.dispose();
+    _queueList.dispose();
+    _currentFile.dispose();
+    _isLoop.dispose();
     volume.dispose();
     normalize.dispose();
-    _files.dispose();
+    progress.dispose();
+    playbackState.dispose();
   }
 }

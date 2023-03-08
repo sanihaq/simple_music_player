@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 import 'package:simple_audio/simple_audio.dart';
 
-import '../controller.dart';
+import '../states/player_controller.dart';
 import 'elements.dart';
 
 class PlaybackControl extends StatefulWidget {
@@ -16,12 +14,12 @@ class PlaybackControl extends StatefulWidget {
 
 class _PlaybackControlState extends State<PlaybackControl> {
   double mutedVolume = 0;
-  late final PlayerController playerController;
+  late final PlaybackController playerController;
 
   @override
   void initState() {
     super.initState();
-    playerController = context.get<PlayerController>();
+    playerController = context.get<PlaybackController>();
   }
 
   @override
@@ -126,7 +124,7 @@ class _PlaybackControlState extends State<PlaybackControl> {
                   ),
                   const SizedBox(width: 8.0),
                   SignalBuilder(
-                    signal: playerController.files,
+                    signal: playerController.queueList,
                     builder: (context, files, __) {
                       return CircleButton(
                         size: 40,

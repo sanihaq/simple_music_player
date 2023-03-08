@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 
-import '../consts.dart';
-import '../controller.dart';
-import '../utils.dart';
+import '../utils/consts.dart';
+import '../states/player_controller.dart';
+import '../utils/utils.dart';
 
 class PlayerQueue extends StatefulWidget {
   const PlayerQueue({super.key, required this.setExpanded});
@@ -15,12 +15,12 @@ class PlayerQueue extends StatefulWidget {
 
 class _PlayerQueueState extends State<PlayerQueue> {
   bool _expanded = false;
-  late final PlayerController playerController;
+  late final PlaybackController playerController;
 
   @override
   void initState() {
     super.initState();
-    playerController = context.get<PlayerController>();
+    playerController = context.get<PlaybackController>();
   }
 
   @override
@@ -94,7 +94,7 @@ class _PlayerQueueState extends State<PlayerQueue> {
           padding: EdgeInsets.only(
               left: 16.0, bottom: _expanded ? 110 : 78.0, top: 8.0),
           child: SignalBuilder(
-            signal: playerController.files,
+            signal: playerController.queueList,
             builder: (context, files, _) {
               return files.isEmpty
                   ? const SizedBox()
