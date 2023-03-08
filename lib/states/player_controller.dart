@@ -2,6 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_audio/simple_audio.dart';
 import 'package:simple_music_player/utils/consts.dart';
 import 'package:simple_music_player/utils/utils.dart';
@@ -57,9 +58,11 @@ class PlaybackController {
     normalize.update((_) => value);
   }
 
-  void setVolume(double value) {
-    _player.setVolume(value);
+  void setVolume(double value) async {
+    await _player.setVolume(value);
     volume.update((_) => value);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('volume', value);
   }
 
   Future<void> play(Mp3File file) async {

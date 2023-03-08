@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../states/player_controller.dart';
 import 'elements.dart';
@@ -12,6 +13,7 @@ class VolumeControl extends StatefulWidget {
 }
 
 class _VolumeControlState extends State<VolumeControl> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   double mutedVolume = 0;
   late final PlaybackController playerController;
 
@@ -19,6 +21,13 @@ class _VolumeControlState extends State<VolumeControl> {
   void initState() {
     super.initState();
     playerController = context.get<PlaybackController>();
+    _prefs.then((SharedPreferences prefs) {
+      final value = prefs.getDouble('volume');
+      if (value != null) {
+        playerController.setVolume(value);
+        playerController.volume.update((_) => value);
+      }
+    });
   }
 
   @override
