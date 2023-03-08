@@ -93,22 +93,17 @@ class _PlayerQueueState extends State<PlayerQueue> {
               return files.isEmpty
                   ? const SizedBox()
                   : expanded
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            ListView.builder(
-                              reverse: true,
-                              shrinkWrap: true,
-                              itemCount: files.length,
-                              itemBuilder: (context, i) {
-                                final file = files.toList()[i];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: getQueueItem(file),
-                                );
-                              },
-                            ),
-                          ],
+                      ? ListView.builder(
+                          reverse: true,
+                          shrinkWrap: true,
+                          itemCount: files.length,
+                          itemBuilder: (context, i) {
+                            final file = files.toList()[i];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: getQueueItem(file),
+                            );
+                          },
                         )
                       : getQueueItem(files.first);
             },
