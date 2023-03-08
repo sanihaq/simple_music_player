@@ -428,6 +428,22 @@ class _PlayerState extends State<Player> {
                       ),
                       const SizedBox(width: 8.0),
                       SignalBuilder(
+                        signal: playerController.isLoop,
+                        builder: (context, loop, __) {
+                          return CircleButton(
+                            size: 40,
+                            onPressed: () async {
+                              await playerController.toggleLoop();
+                            },
+                            child: Icon(
+                              loop ? Icons.repeat_one : Icons.repeat,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(width: 8.0),
+                      SignalBuilder(
                           signal: playerController.files,
                           builder: (context, files, __) {
                             return CircleButton(

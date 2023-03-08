@@ -50,6 +50,9 @@ class PlayerController {
   Signal<PlaybackState> playbackState = createSignal(PlaybackState.done);
   bool get isPlaying => playbackState.value == PlaybackState.play;
 
+  final Signal<bool> _isLoop = createSignal(false);
+  ReadableSignal<bool> get isLoop => _isLoop.readable;
+
   Signal<double> volume = createSignal(kInitialVolume);
   bool get isMuted => volume.value == 0;
 
@@ -71,6 +74,11 @@ class PlayerController {
     await _player.stop();
     await _player.open(file.path);
     _currentFile.update((_) => file);
+  }
+
+  Future<void> toggleLoop() async {
+    _isLoop.update((value) => !value);
+    await _player.loopPlayback(_isLoop.value);
   }
 
   Future<void> next() async {
