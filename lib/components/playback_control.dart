@@ -17,7 +17,7 @@ class PlaybackControl extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       child: AnimatedPadding(
         duration: const Duration(milliseconds: 50),
-        padding: EdgeInsets.only(bottom: expanded ? 50.0 : 6.0),
+        padding: EdgeInsets.only(bottom: expanded ? 48.0 : 8.0),
         child: Container(
           height: 60,
           color: Theme.of(context).colorScheme.background,

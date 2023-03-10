@@ -75,7 +75,7 @@ class PlayerQueue extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.only(
-              left: 16.0, bottom: expanded ? 110 : 78.0, top: 8.0),
+              left: 16.0, bottom: expanded ? 110 : 76.0, top: 8.0),
           child: SignalBuilder(
             signal: playerController.queueList,
             builder: (context, files, _) {
