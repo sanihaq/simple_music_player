@@ -68,7 +68,7 @@ class _VolumeControlState extends State<VolumeControl> {
                             playerController.isMuted
                                 ? Icons.volume_off
                                 : Icons.volume_up,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                         Slider(
@@ -109,7 +109,7 @@ class _VolumeControlState extends State<VolumeControl> {
                         width: value == 0 || value.isNaN
                             ? 0
                             : MediaQuery.of(context).size.width * value,
-                        color: Colors.blue,
+                        color: Theme.of(context).colorScheme.primary,
                       );
                     },
                   ),

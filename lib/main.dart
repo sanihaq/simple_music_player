@@ -32,7 +32,9 @@ class AppContainer extends StatelessWidget {
       child: MaterialApp(
         title: 'Simple Music Player',
         debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.system,
         theme: ThemeData(useMaterial3: true),
+        darkTheme: ThemeData.dark(useMaterial3: true),
         home: const App(),
       ),
     );

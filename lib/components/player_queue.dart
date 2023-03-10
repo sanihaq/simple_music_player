@@ -52,7 +52,7 @@ class PlayerQueue extends StatelessWidget {
             ? MediaQuery.of(context).size.height
             : kBottomCollapsedSize,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.background,
           borderRadius: expanded
               ? null
               : const BorderRadius.only(

@@ -20,7 +20,7 @@ class PlaybackControl extends StatelessWidget {
         padding: EdgeInsets.only(bottom: expanded ? 50.0 : 6.0),
         child: Container(
           height: 60,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.background,
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Stack(
             alignment: AlignmentDirectional.centerEnd,
@@ -85,7 +85,7 @@ class PlaybackControl extends StatelessWidget {
                           playerController.isPlaying
                               ? Icons.pause_rounded
                               : Icons.play_arrow_rounded,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       );
                     },
@@ -101,7 +101,7 @@ class PlaybackControl extends StatelessWidget {
                         },
                         child: Icon(
                           loop ? Icons.repeat_one : Icons.repeat,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       );
                     },
@@ -113,7 +113,10 @@ class PlaybackControl extends StatelessWidget {
                       return CircleButton(
                         size: 40,
                         onPressed: files.isEmpty ? null : playerController.next,
-                        child: const Icon(Icons.skip_next, color: Colors.white),
+                        child: Icon(
+                          Icons.skip_next,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
                       );
                     },
                   ),
