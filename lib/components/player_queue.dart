@@ -90,7 +90,29 @@ class PlayerQueue extends StatelessWidget {
                             final file = files.toList()[i];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: buildQueueItem(context, file),
+                              child: Stack(
+                                children: [
+                                  buildQueueItem(context, file),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: IconButton(
+                                          onPressed: () =>
+                                              playerController.remove(file.id),
+                                          tooltip: "remove from queue",
+                                          icon: const Icon(
+                                            Icons.clear,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             );
                           },
                         )
