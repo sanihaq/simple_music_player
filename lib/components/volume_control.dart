@@ -126,24 +126,15 @@ class _VolumeControlState extends State<VolumeControl> {
             ],
           ),
           const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SignalBuilder(
-                signal: playerController.progress,
-                builder: (context, value, _) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 900),
-                    curve: Curves.linear,
-                    width: value.isNaN
-                        ? 0
-                        : MediaQuery.of(context).size.width * value,
-                    height: 4,
-                    color: Theme.of(context).colorScheme.primary,
-                  );
-                },
-              ),
-            ],
+          SignalBuilder(
+            signal: playerController.progress,
+            builder: (context, value, _) {
+              return LinearProgressIndicator(
+                value: value.isNaN ? 0.0 : value,
+                backgroundColor: Theme.of(context).colorScheme.background,
+                minHeight: 4,
+              );
+            },
           ),
         ],
       ),
