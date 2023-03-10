@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 import 'package:simple_music_player/components/player_queue.dart';
 import 'package:simple_music_player/states/others.dart';
+import 'package:simple_music_player/states/player_controller.dart';
 
 import '/components/files_loader.dart';
 import '/components/playback_control.dart';
@@ -16,6 +17,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filesController = context.get<FilesController>();
+    final playbackController = context.get<PlaybackController>();
     return SignalBuilder(
       signal: filesController.files,
       builder: (context, files, _) {
@@ -56,9 +58,13 @@ class App extends StatelessWidget {
             alignment: AlignmentDirectional.bottomEnd,
             children: [
               if (files.isEmpty) const FilesLoader() else const FilesList(),
-              const PlayerQueue(),
+              if (files.isNotEmpty ||
+                  playbackController.currentFile.value != null)
+                const PlayerQueue(),
               const VolumeControl(),
-              const PlaybackControl(),
+              if (files.isNotEmpty ||
+                  playbackController.currentFile.value != null)
+                const PlaybackControl(),
             ],
           ),
         );
