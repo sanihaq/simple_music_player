@@ -27,47 +27,50 @@ class PlaybackControl extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () => expandQueue.update((value) => !value),
-                child: SignalBuilder(
-                  signal: playerController.currentFile,
-                  builder: (context, file, __) {
-                    if (file == null) return const SizedBox();
-                    const imageSize = 55.0;
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (file.data.artBytes != null)
-                          SizedBox(
-                            width: imageSize,
-                            child: Image.memory(file.data.artBytes!),
-                          )
-                        else
-                          const SizedBox(
-                            width: imageSize,
-                            height: imageSize,
+                child: Material(
+                  child: SignalBuilder(
+                    signal: playerController.currentFile,
+                    builder: (context, file, __) {
+                      if (file == null) return const SizedBox();
+                      const imageSize = 55.0;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (file.data.artBytes != null)
+                            SizedBox(
+                              width: imageSize,
+                              child: Image.memory(file.data.artBytes!),
+                            )
+                          else
+                            const SizedBox(
+                              width: imageSize,
+                              height: imageSize,
+                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 2.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  file.data.title ?? "unknown",
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                                const SizedBox(height: 2.0),
+                                Text(
+                                  file.data.artist ?? "unknown",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ],
+                            ),
                           ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 2.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                file.data.title ?? "unknown",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              const SizedBox(height: 2.0),
-                              Text(
-                                file.data.artist ?? "unknown",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
               Row(
