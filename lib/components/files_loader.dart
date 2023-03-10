@@ -4,29 +4,13 @@ import 'package:flutter_solidart/flutter_solidart.dart';
 import '../states/files_controller.dart';
 import '../utils/utils.dart';
 
-class FilesLoader extends StatefulWidget {
+class FilesLoader extends StatelessWidget {
   const FilesLoader({super.key});
 
   @override
-  State<FilesLoader> createState() => _FilesLoaderState();
-}
-
-class _FilesLoaderState extends State<FilesLoader> {
-  late final FilesController filesController;
-
-  @override
-  void initState() {
-    super.initState();
-    filesController = context.get<FilesController>();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final filesController = context.get<FilesController>();
+
     return SignalBuilder(
       signal: filesController.isLoading,
       builder: (context, isLoading, _) {

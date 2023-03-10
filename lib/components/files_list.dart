@@ -5,31 +5,13 @@ import '../states/files_controller.dart';
 import '../states/player_controller.dart';
 import '../utils/consts.dart';
 
-class FilesList extends StatefulWidget {
+class FilesList extends StatelessWidget {
   const FilesList({super.key});
 
   @override
-  State<FilesList> createState() => _FilesListState();
-}
-
-class _FilesListState extends State<FilesList> {
-  late final FilesController filesController;
-  late final PlaybackController playerController;
-
-  @override
-  void initState() {
-    super.initState();
-    filesController = context.get<FilesController>();
-    playerController = context.get<PlaybackController>();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final filesController = context.get<FilesController>();
+    final playerController = context.get<PlaybackController>();
     return SignalBuilder(
       signal: filesController.files,
       builder: (context, files, _) {

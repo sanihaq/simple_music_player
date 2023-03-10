@@ -6,30 +6,12 @@ import '../states/others.dart';
 import '../states/player_controller.dart';
 import 'elements.dart';
 
-class PlaybackControl extends StatefulWidget {
+class PlaybackControl extends StatelessWidget {
   const PlaybackControl({super.key});
 
   @override
-  State<PlaybackControl> createState() => _PlaybackControlState();
-}
-
-class _PlaybackControlState extends State<PlaybackControl> {
-  double mutedVolume = 0;
-  late final PlaybackController playerController;
-
-  @override
-  void initState() {
-    super.initState();
-    playerController = context.get<PlaybackController>();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final playerController = context.get<PlaybackController>();
     final expanded = context.observe<bool>(OtherSignals.expandQueue);
     return Align(
       alignment: Alignment.bottomCenter,

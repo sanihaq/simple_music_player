@@ -14,8 +14,8 @@ class VolumeControl extends StatefulWidget {
 
 class _VolumeControlState extends State<VolumeControl> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  double mutedVolume = 0;
   late final PlaybackController playerController;
+  double mutedVolume = 0;
 
   @override
   void initState() {

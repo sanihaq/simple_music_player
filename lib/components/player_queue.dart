@@ -6,26 +6,8 @@ import '../utils/consts.dart';
 import '../states/player_controller.dart';
 import '../utils/utils.dart';
 
-class PlayerQueue extends StatefulWidget {
+class PlayerQueue extends StatelessWidget {
   const PlayerQueue({super.key});
-
-  @override
-  State<PlayerQueue> createState() => _PlayerQueueState();
-}
-
-class _PlayerQueueState extends State<PlayerQueue> {
-  late final PlaybackController playerController;
-
-  @override
-  void initState() {
-    super.initState();
-    playerController = context.get<PlaybackController>();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   Widget getQueueItem(Mp3File file) {
     const imageSize = 46.0;
@@ -58,6 +40,7 @@ class _PlayerQueueState extends State<PlayerQueue> {
 
   @override
   Widget build(BuildContext context) {
+    final playerController = context.get<PlaybackController>();
     final expanded = context.observe<bool>(OtherSignals.expandQueue);
     return GestureDetector(
       onTap: () => expandQueue.update((value) => !value),

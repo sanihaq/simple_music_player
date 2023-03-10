@@ -11,30 +11,11 @@ import 'components/files_list.dart';
 import 'states/files_controller.dart';
 import 'utils/utils.dart';
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   const App({super.key});
-
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  late final FilesController filesController;
-
-  @override
-  void initState() {
-    super.initState();
-    filesController = context.get<FilesController>();
-  }
-
-  @override
-  void dispose() {
-    expandQueue.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final filesController = context.get<FilesController>();
     return SignalBuilder(
       signal: filesController.files,
       builder: (context, files, _) {
@@ -60,9 +41,7 @@ class _AppState extends State<App> {
                 onPressed: files.isEmpty
                     ? null
                     : () async {
-                        setState(() {
-                          files.clear();
-                        });
+                        filesController.clearFiles();
                         if (context.mounted) {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(showMsg("files cleared"));
