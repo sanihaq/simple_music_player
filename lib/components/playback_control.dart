@@ -78,6 +78,7 @@ class PlaybackControl extends StatelessWidget {
                     builder: (context, state, __) {
                       return CircleButton(
                         size: 40,
+                        tooltip: "play",
                         onPressed: state == PlaybackState.done
                             ? null
                             : () {
@@ -102,6 +103,7 @@ class PlaybackControl extends StatelessWidget {
                     builder: (context, loop, __) {
                       return CircleButton(
                         size: 40,
+                        tooltip: "loop",
                         onPressed: () async {
                           await playerController.toggleLoop();
                         },
@@ -118,6 +120,7 @@ class PlaybackControl extends StatelessWidget {
                     builder: (context, files, __) {
                       return CircleButton(
                         size: 40,
+                        tooltip: "next",
                         onPressed: files.isEmpty ? null : playerController.next,
                         child: Icon(
                           Icons.skip_next,
