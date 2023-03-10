@@ -9,7 +9,7 @@ import '../utils/utils.dart';
 class PlayerQueue extends StatelessWidget {
   const PlayerQueue({super.key});
 
-  Widget getQueueItem(Mp3File file) {
+  Widget buildQueueItem(BuildContext context, Mp3File file) {
     const imageSize = 46.0;
     final data = file.data;
     return Row(
@@ -29,8 +29,14 @@ class PlayerQueue extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(data.title ?? "unknown"),
-              Text(data.artist ?? "unknown"),
+              Text(
+                data.title ?? "unknown",
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              Text(
+                data.artist ?? "unknown",
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ],
           ),
         ),
@@ -84,11 +90,11 @@ class PlayerQueue extends StatelessWidget {
                             final file = files.toList()[i];
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 8.0),
-                              child: getQueueItem(file),
+                              child: buildQueueItem(context, file),
                             );
                           },
                         )
-                      : getQueueItem(files.first);
+                      : buildQueueItem(context, files.first);
             },
           ),
         ),

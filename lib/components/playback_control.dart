@@ -53,9 +53,15 @@ class PlaybackControl extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(file.data.title ?? "unknown"),
+                              Text(
+                                file.data.title ?? "unknown",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
                               const SizedBox(height: 2.0),
-                              Text(file.data.artist ?? "unknown"),
+                              Text(
+                                file.data.artist ?? "unknown",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
                             ],
                           ),
                         ),
