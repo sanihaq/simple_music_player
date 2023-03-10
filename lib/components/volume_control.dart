@@ -134,7 +134,8 @@ class _VolumeControlState extends State<VolumeControl> {
                 builder: (context, value, _) {
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 900),
-                    width: value == 0 || value.isNaN
+                    curve: Curves.linear,
+                    width: value.isNaN
                         ? 0
                         : MediaQuery.of(context).size.width * value,
                     height: 4,
