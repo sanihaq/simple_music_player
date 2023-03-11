@@ -8,13 +8,17 @@ import 'package:simple_music_player/utils/consts.dart';
 import 'package:simple_music_player/utils/utils.dart';
 
 class PlaybackController {
-  PlaybackController({
-    Mp3File? currentFile,
-    List<Mp3File> initialQueue = const [],
-  })  : _queueList = createSignal(initialQueue),
-        _currentFile = createSignal(currentFile),
+  static PlaybackController? _instance;
+
+  PlaybackController._()
+      : _queueList = createSignal([]),
+        _currentFile = createSignal(null),
         _player = SimpleAudio(
-          onSkipNext: (_) => debugPrint("Next"),
+          onSkipNext: (_) {
+            if (PlaybackController.instance.queueList.value.isNotEmpty) {
+              PlaybackController.instance.next();
+            }
+          },
           onSkipPrevious: (_) => debugPrint("Prev"),
           onNetworkStreamError: (player) {
             debugPrint("Network Stream Error");
@@ -34,6 +38,10 @@ class PlaybackController {
       final value = event.position.toDouble() / event.duration.toDouble();
       if (progress.value != value) progress.update((_) => value);
     });
+  }
+
+  static PlaybackController get instance {
+    return _instance ??= PlaybackController._();
   }
 
   final SimpleAudio _player;

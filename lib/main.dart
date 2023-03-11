@@ -24,7 +24,7 @@ class AppContainer extends StatelessWidget {
           dispose: (controller) => controller.dispose(),
         ),
         SolidProvider<PlaybackController>(
-          create: () => PlaybackController(),
+          create: () => PlaybackController.instance,
           dispose: (controller) => controller.dispose(),
         ),
       ],
