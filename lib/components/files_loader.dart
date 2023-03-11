@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 
@@ -10,6 +11,8 @@ class FilesLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filesController = context.get<FilesController>();
+    final isMobile = defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.android;
 
     return SignalBuilder(
       signal: filesController.isLoading,
@@ -28,18 +31,19 @@ class FilesLoader extends StatelessWidget {
                               ? null
                               : () => loadAndAddFiles(
                                   context, filesController, false),
-                          child: const Text("load only files"),
+                          child: const Text("load files"),
                         ),
-                        const SizedBox(
-                          height: 20.0,
-                        ),
-                        ElevatedButton(
-                          onPressed: isDisabled
-                              ? null
-                              : () => loadAndAddFiles(
-                                  context, filesController, false),
-                          child: const Text("load files and folders"),
-                        ),
+                        if (!isMobile)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: ElevatedButton(
+                              onPressed: isDisabled
+                                  ? null
+                                  : () => loadAndAddFiles(
+                                      context, filesController, false),
+                              child: const Text("load files and folders"),
+                            ),
+                          ),
                       ],
                     );
                   },

@@ -12,23 +12,23 @@ class PlaybackController {
 
   PlaybackController._()
       : _queueList = createSignal([]),
-        _currentFile = createSignal(null),
-        _player = SimpleAudio(
-          onSkipNext: (_) {
-            if (PlaybackController.instance.queueList.value.isNotEmpty) {
-              PlaybackController.instance.next();
-            }
-          },
-          onSkipPrevious: (_) => debugPrint("Prev"),
-          onNetworkStreamError: (player) {
-            debugPrint("Network Stream Error");
-            player.stop();
-          },
-          onDecodeError: (player) {
-            debugPrint("Decode Error");
-            player.stop();
-          },
-        ) {
+        _currentFile = createSignal(null) {
+    _player = SimpleAudio(
+      onSkipNext: (_) {
+        if (PlaybackController.instance.queueList.value.isNotEmpty) {
+          PlaybackController.instance.next();
+        }
+      },
+      onSkipPrevious: (_) => debugPrint("Prev"),
+      onNetworkStreamError: (player) {
+        debugPrint("Network Stream Error");
+        player.stop();
+      },
+      onDecodeError: (player) {
+        debugPrint("Decode Error");
+        player.stop();
+      },
+    );
     _player.setVolume(kInitialVolume);
     _player.playbackStateStream.listen((event) {
       playbackState.update((value) => event);
@@ -44,7 +44,7 @@ class PlaybackController {
     return _instance ??= PlaybackController._();
   }
 
-  final SimpleAudio _player;
+  late final SimpleAudio _player;
 
   final Signal<List<Mp3File>> _queueList;
   final Signal<Mp3File?> _currentFile;
@@ -76,6 +76,7 @@ class PlaybackController {
   Future<void> play(Mp3File file) async {
     await _player.stop();
     await _player.open(file.path);
+    await _player.setMetadata(file.data);
     _currentFile.update((_) => file);
   }
 

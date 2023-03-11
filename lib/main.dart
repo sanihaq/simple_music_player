@@ -7,8 +7,15 @@ import 'package:simple_music_player/states/others.dart';
 import 'app.dart';
 import 'states/player_controller.dart';
 
-void main() {
-  SimpleAudio.init();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SimpleAudio.init(
+    androidCompactPlaybackActions: [0, 1],
+    actions: [
+      NotificationActions.playPause,
+      NotificationActions.skipNext,
+    ],
+  );
   runApp(const AppContainer());
 }
 

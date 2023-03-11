@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_solidart/flutter_solidart.dart';
 import 'package:simple_music_player/components/player_queue.dart';
-import 'package:simple_music_player/states/others.dart';
 import 'package:simple_music_player/states/player_controller.dart';
 
 import '/components/files_loader.dart';
