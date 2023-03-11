@@ -82,40 +82,48 @@ class PlayerQueue extends StatelessWidget {
               return files.isEmpty
                   ? const SizedBox()
                   : expanded
-                      ? ListView.builder(
-                          reverse: true,
-                          shrinkWrap: true,
-                          itemCount: files.length,
-                          itemBuilder: (context, i) {
-                            final file = files.toList()[i];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Stack(
-                                children: [
-                                  buildQueueItem(context, file),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                      ? FutureBuilder(
+                          future:
+                              Future.delayed(const Duration(milliseconds: 100)),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState !=
+                                ConnectionState.done) return const SizedBox();
+                            return ListView.builder(
+                              reverse: true,
+                              shrinkWrap: true,
+                              itemCount: files.length,
+                              itemBuilder: (context, i) {
+                                final file = files.toList()[i];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Stack(
                                     children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 8.0),
-                                        child: IconButton(
-                                          onPressed: () =>
-                                              playerController.remove(file.id),
-                                          tooltip: "remove from queue",
-                                          icon: const Icon(
-                                            Icons.clear,
-                                            size: 18,
-                                          ),
-                                        ),
+                                      buildQueueItem(context, file),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 8.0),
+                                            child: IconButton(
+                                              onPressed: () => playerController
+                                                  .remove(file.id),
+                                              tooltip: "remove from queue",
+                                              icon: const Icon(
+                                                Icons.clear,
+                                                size: 18,
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       )
                                     ],
-                                  )
-                                ],
-                              ),
+                                  ),
+                                );
+                              },
                             );
-                          },
-                        )
+                          })
                       : buildQueueItem(context, files.first);
             },
           ),
