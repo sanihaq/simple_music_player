@@ -25,6 +25,34 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+  icons_launcher: ^2.1.0
+  flutter_application_id: ^1.0.0
+
+dependency_overrides:
+  yaml: ^3.1.1
+  args: ^2.4.0
 
 flutter:
   uses-material-design: true
+
+flutter_application_id:
+  android:
+    id: "com.github.sanihaq.simplePlayer"
+    name: "Simple Player"
+  ios:
+    id: "com.github.sanihaq.simplePlayer"
+    name: "Simple Player"
+
+icons_launcher:
+  image_path: "assets/icons/app-icon.png"
+  platforms:
+    ios:
+      enable: true
+    web:
+      enable: false
+    macos:
+      enable: true
+    windows:
+      enable: true
+    linux:
+      enable: true

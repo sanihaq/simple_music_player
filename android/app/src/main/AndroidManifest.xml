@@ -2,7 +2,7 @@
     package="com.example.simple_music_player">
    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
    <application
-        android:label="simple_music_player"
+        android:label="Simple Player"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

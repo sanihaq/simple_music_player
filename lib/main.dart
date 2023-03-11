@@ -10,6 +10,7 @@ import 'states/player_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SimpleAudio.init(
+    dbusName: "com.github.sanihaq.simplePlayer",
     androidCompactPlaybackActions: [0, 1],
     actions: [
       NotificationActions.playPause,
