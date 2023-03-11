@@ -28,8 +28,16 @@ class FilesList extends StatelessWidget {
                     width: 60,
                     child: Image.memory(file.data.artBytes!),
                   ),
-                  title: Text(file.data.title ?? file.path.split("/").last),
-                  subtitle: Text(file.data.artist ?? "unknown"),
+                  title: Text(
+                    file.data.title ?? file.path.split("/").last,
+                    softWrap: false,
+                    maxLines: 1,
+                  ),
+                  subtitle: Text(
+                    file.data.artist ?? "unknown",
+                    softWrap: false,
+                    maxLines: 1,
+                  ),
                   onTap: () async {
                     playerController.addToQueue(file);
                   },

@@ -24,20 +24,26 @@ class PlayerQueue extends StatelessWidget {
             width: imageSize,
             height: imageSize,
           ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                data.title ?? "unknown",
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-              Text(
-                data.artist ?? "unknown",
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data.title ?? "unknown",
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  softWrap: false,
+                  maxLines: 1,
+                ),
+                Text(
+                  data.artist ?? "unknown",
+                  style: Theme.of(context).textTheme.bodySmall,
+                  softWrap: false,
+                  maxLines: 1,
+                ),
+              ],
+            ),
           ),
         ),
       ],

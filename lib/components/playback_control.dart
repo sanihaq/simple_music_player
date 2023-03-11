@@ -47,24 +47,31 @@ class PlaybackControl extends StatelessWidget {
                               width: imageSize,
                               height: imageSize,
                             ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 2.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  file.data.title ?? "unknown",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const SizedBox(height: 2.0),
-                                Text(
-                                  file.data.artist ?? "unknown",
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                              ],
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 2.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    file.data.title ?? "unknown",
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                    softWrap: false,
+                                    maxLines: 1,
+                                  ),
+                                  const SizedBox(height: 2.0),
+                                  Text(
+                                    file.data.artist ?? "unknown",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    softWrap: false,
+                                    maxLines: 1,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
