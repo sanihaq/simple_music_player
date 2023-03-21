@@ -40,7 +40,7 @@ class FilesLoader extends StatelessWidget {
                               onPressed: isDisabled
                                   ? null
                                   : () => loadAndAddFiles(
-                                      context, filesController, false),
+                                      context, filesController, true),
                               child: const Text("load files and folders"),
                             ),
                           ),
