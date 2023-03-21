@@ -82,21 +82,6 @@ class _VolumeControlState extends State<VolumeControl> {
                     builder: (context, volume, _) {
                       return Row(
                         children: [
-                          SliderTheme(
-                            data: Theme.of(context).sliderTheme.copyWith(
-                                  thumbShape: const RoundSliderThumbShape(
-                                      enabledThumbRadius: 10),
-                                  overlayShape: const RoundSliderOverlayShape(
-                                      overlayRadius: 20),
-                                ),
-                            child: Slider(
-                              value: volume,
-                              max: 1,
-                              onChanged: (value) {
-                                playerController.setVolume(value);
-                              },
-                            ),
-                          ),
                           CircleButton(
                             size: 30,
                             tooltip: "volume mute",
@@ -116,7 +101,24 @@ class _VolumeControlState extends State<VolumeControl> {
                               color: Theme.of(context).colorScheme.onPrimary,
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          SliderTheme(
+                            data: Theme.of(context).sliderTheme.copyWith(
+                                  thumbShape: const RoundSliderThumbShape(
+                                      enabledThumbRadius: 10),
+                                  overlayShape: const RoundSliderOverlayShape(
+                                      overlayRadius: 15),
+                                ),
+                            child: SizedBox(
+                              width: 155,
+                              child: Slider(
+                                value: volume,
+                                max: 1,
+                                onChanged: (value) {
+                                  playerController.setVolume(value);
+                                },
+                              ),
+                            ),
+                          ),
                         ],
                       );
                     },
