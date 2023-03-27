@@ -31,11 +31,11 @@ class Mp3File {
 
 Future<Mp3File> mp3FileFromPath(String path) async {
   final defaultArt = Picture(
-    pictureType: PictureType.Icon,
-    mimeType: MimeType.Png,
+    pictureType: PictureType.icon,
+    mimeType: MimeType.png,
     bytes: base64Decode(kMp3FileDefaultArt),
   );
-  Tag tag = Tag(pictures: []);
+  Tag tag = const Tag(pictures: []);
   try {
     tag = await AudioTags.read(path) ?? tag;
     // ignore: empty_catches

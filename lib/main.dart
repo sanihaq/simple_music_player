@@ -11,10 +11,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SimpleAudio.init(
     dbusName: "com.github.sanihaq.simplePlayer",
-    androidCompactPlaybackActions: [0, 1],
+    androidCompactActions: [0, 1],
     actions: [
-      NotificationActions.playPause,
-      NotificationActions.skipNext,
+      MediaControlAction.playPause,
+      MediaControlAction.skipNext,
     ],
   );
   runApp(const AppContainer());
